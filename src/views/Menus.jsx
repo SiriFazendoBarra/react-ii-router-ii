@@ -1,40 +1,40 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
-export default function Menus () {
+import Loading from "../components/Loading"
 
-    // const menus = [
-    //     {nombre: 'almuerzo-1', almuerzo: 1},
-    //     {nombre: 'almuerzo-2', almuerzo: 2},
-    //     {nombre: 'almuerzo-3', almuerzo: 3},
-        
-    // ]
+export default function Menus() {
 
     const [menus, setMenus] = useState(null)
 
-    const getMenus = async() =>{
-        const res = await fetch("../menus.json")
-        const data = await res.json()
-        
-        setMenus(data)
-        console.log(menus)
+    const getMenus = async () => {
+
+        try {
+            const res = await fetch("../menus.json")
+            if (!res.ok) throw('404')
+            const data = await res.json()
+            setMenus(data.menus)
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         getMenus()
-    },[])
-    
-    if (!menus) return <h1>loading...</h1>
-    
-    return(
+    }, [])
+
+    if (!menus) return <Loading />
+
+    return (
         <div className="container">
             <ul>
-                {menus.map((menu) =>{
-                    return(
-                        <li key={menu.nombre}>
-                            <Link to={`/menus/${menu.nombre}`}>{menu.almuerzo}</Link>
+                {menus.map((menu) => {
+                    return (
+                        <li key={menu.id}>
+                            <Link to={`/menus/${menu.id}`}>{menu.nombre}</Link>
                         </li>
-                )
+                    )
                 })}
             </ul>
         </div>
